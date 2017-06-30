@@ -1,0 +1,187 @@
+﻿@model FacebookLoginMVC.Models.ViewModel
+
+@*<script src="//connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v2.2" async></script>*@
+
+
+
+    <div id="fb-root"></div>
+
+
+
+    <script>
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=766665516834460";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+
+
+    </script>
+
+    <div class="col-lg-4">
+        <div class="well well-lg" style="height:500px;  margin-left:-200px">
+            <h5>Ranking based on Comments</h5>
+            <div class="well well-lg" style="height:400px;overflow-y:auto;">
+
+                @if (Model.commentsData != null && Model.commentsData.Count() != 0)
+                {
+                    foreach (var myFriend in Model.commentsData)
+                    {
+                        <a href="@myFriend.link" target="_blank">
+                            <div class="photoTile">
+                                <label>@myFriend.name</label>
+                                @if (myFriend.pic_large != null)
+                                {
+                                    <img src="@myFriend.pic_large" />
+                                }
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <h4>No Posts with Comments in the given time range</h4>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-4">
+        <div class="well well-lg" style="height:500px;">
+            <h5>Ranking based on Shares</h5>
+            <div class="well well-lg" style="height:400px; overflow-y:auto;">
+                @if (Model.sharesData != null && Model.sharesData.Count() != 0)
+                {
+                    foreach (var myFriend in Model.sharesData)
+                    {
+                        <a href="@myFriend.link" target="_blank">
+                            <div class="photoTile">
+                                <label>@myFriend.name</label>
+                                @if (myFriend.pic_large != null)
+                                {
+                                    <img src="@myFriend.pic_large" />
+                                }
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <h4>No Posts with Shares in the given time range</h4>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-4">
+        <div class="well well-lg" style="height:500px ;  margin-right:-200px">
+            <h5>Ranking based on Reactions(Likes)</h5>
+            <div class="well well-lg" style="height:400px;overflow-y:auto;">
+                @if (Model.reactionsData != null && Model.reactionsData.Count() != 0)
+                {
+                    foreach (var myFriend in Model.reactionsData)
+                    {
+                        <a href="@myFriend.link" target="_blank">
+                            <div class="photoTile">
+                                <label>@myFriend.name</label>
+                                @if (myFriend.pic_large != null)
+                                {
+                                    <img src="@myFriend.pic_large" />
+                                }
+                            </div>
+                        </a>
+                    }
+
+                }
+                else
+                {
+                    <h4>No Posts with Reactions in the given time range</h4>
+                }
+            </div>
+        </div>
+    </div>
+    <hr />
+
+
+    <div class="topPosts">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="well well-lg" style="margin-right: -22px;height:500px;margin-left: -210px;">
+                    <h4>Most Liked Post</h4>
+                    <div class="well well-lg" style="height:400px;overflow-y:auto;">
+
+
+                        @if (Model.mostLikedPost != "")
+                        {
+                            <div class="fb-post" data-href="@Model.mostLikedPost" data-width="500" data-show-text="true"><blockquote cite="@Model.mostLikedPost" class="fb-xfbml-parse-ignore">Posted by <a href="@Model.mostLikedPost">Facebook</a> &nbsp;</blockquote></div>
+                        }
+                        else
+                        {
+                            <h4>No Posts with Likes in given timerange</h4>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-lg-4">
+                <div class="well well-lg" style="height: 501px;margin-right: -126px;">
+                    <h4>Most Shared Post</h4>
+                    <div class="well well-lg" style="height:400px;overflow-y:auto;">
+
+
+                        @if (Model.mostSharedPost != "")
+                        {
+                            <div class="fb-post" data-href="@Model.mostSharedPost" data-width="500" data-show-text="true"><blockquote cite="@Model.mostSharedPost" class="fb-xfbml-parse-ignore">Posted by <a href="@Model.mostSharedPost">Facebook</a> &nbsp;</blockquote></div>
+                        }
+                        else
+                        {
+                            <h4>No Shares within given time range</h4>
+                        }
+                    </div>
+
+
+
+
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="well well-lg" style="height:500px;margin-right: -331px;margin-left: 99px;">
+
+                    <h4>
+                        Most Commented Post
+                    </h4>
+                    <div class="well well-lg" style="height:400px;overflow-y:auto;">
+
+
+                        @if (Model.mostCommentedPost != "")
+                        {
+                            <div class="fb-post" data-href="@Model.mostCommentedPost" data-width="500" data-show-text="true"><blockquote cite="@Model.mostCommentedPost" class="fb-xfbml-parse-ignore">Posted by <a href="@Model.mostCommentedPost">Facebook</a> &nbsp;</blockquote></div>
+                        }
+                        else
+                        {
+                            <h4>No Posts with Comments in the given time range</h4>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="well-lg well">
+        <h4>Social Frontier Facebook Stream</h4>
+        <div class="row" id="socialFrontier">
+            <div class="fb-page" data-href="https://www.facebook.com/socialfrontier/" data-tabs="timeline" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/socialfrontier/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/socialfrontier/">Social Frontier</a></blockquote></div>
+        </div>
+    </div>

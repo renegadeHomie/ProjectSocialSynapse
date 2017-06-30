@@ -1,0 +1,149 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - SocialSynapse </title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <!-- Include Required Prerequisites -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" onclick="location.href='@Url.Action("Index","Home")'">Social Synapse</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li id="home" class="active"><a href="#" onclick="location.href='@Url.Action("Index","Home")'">Home<span class="sr-only">(current)</span></a></li>
+                    <li id="URLcount"><a href="#">Social Reach</a></li>
+                    @*<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>*@
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li>
+                        @if(TempData["status"] == "Signed In" || TempData["status"] == "Ranking Results")
+                        {
+                            <a href="@TempData["profile"]">
+                                <img src="@TempData["picture"]" style="
+                                                                        height: 25px;
+                                                                        width: 27px;
+                                                                        border-radius: 13px;
+                                                                    " />
+                                @TempData["first_name"] @TempData["lastname"]
+                            </a>
+                        }
+
+                        else
+                        {
+                            <a href="#" onclick="location.href='@Url.Action("Facebook","Home",new
+                                    {
+                                        taskName = "Login",
+
+                                    })'">
+
+                                Log In with Facebook
+                            </a>
+
+                        }
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User Details <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Hi! @TempData["first_name"]</a></li>
+                            <li><a href="#">@TempData["location"]</a></li>
+                            <li><a href="#">@TempData["birthday"]</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">@TempData["email"]</a></li>
+
+
+
+
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div id="wrapper">
+
+        <header id="topHeader" style="margin-top: 56px; height:269px;width:760px;">
+
+            <h1>SocialSynapse</h1>
+
+            <span id="arrow"></span>
+            
+            
+
+        </header>
+        <div id="urlCount"></div>
+       
+   @RenderBody()
+        <footer>
+        <p>&copy; @DateTime.Now.Year - SocialSynapse</p>
+        </footer>
+    </div>
+    
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<script>
+    $(".nav a").on("click", function () {
+        debugger;
+        $(".nav").find(".active").removeClass("active");
+        $(this).parent().addClass("active");
+
+    });
+    $("#URLcount").on("click", function () {
+        debugger;
+        $("#urlCount").load("/Home/GetSharesURLView");
+    });
+</script>

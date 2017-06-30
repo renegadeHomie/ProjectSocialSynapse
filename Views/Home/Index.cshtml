@@ -1,0 +1,240 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@using Microsoft.AspNet.Facebook.Models
+@using FacebookLoginMVC.Models
+@model MyAppUser
+
+
+@if (Model != null)
+{
+    <article class="intro" style="width:761px;">
+        <span id="profilePicture">
+
+            @if (Model.ProfilePicture != null && Model.ProfilePicture.Data.url != null)
+            {
+                <img src="@Model.ProfilePicture.Data.url" />
+            }
+        </span>
+        <h3>Welcome @Model.name</h3>
+       
+    </article>
+}
+
+<hr/>
+@if(TempData["status"] != "Ranking Results")
+{ 
+     
+        <div id="description" class="well well-lg" style="background-color:goldenrod; width:761px;">
+            <h2>App description:</h2><h3>
+                This is a simple app which connects to your facebook and computes ranking of your friends based on the number of likes(shares/comments) on your posts!!
+            </h3>
+        </div>
+
+        <hr />
+
+}
+    
+  <div class="well well-lg" style="background-color:goldenrod; width:761px;">
+      <div class="row">
+          <h4>Select a time range to generate ranked list of friends!</h4>
+          <div id="dateRange" class="col-lg-6">
+              <div id="reportrange" class="" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; margin-right:0px">
+
+                  <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                  <span>
+
+                  </span>
+                  <b class="caret">
+
+                  </b>
+              </div>
+          </div>
+          <div class="col-lg-3"></div>
+
+
+          <div class="col-lg-3">
+              <button type="button" class="btn btn-primary pull-right" style="
+                    margin-right : 51px;" onclick="callAPI();">
+                  Generate Ranking
+              </button>
+          </div>
+      </div>
+</div>
+<hr />
+
+
+@*<div id="partialViewReactions"></div>*@
+
+@if (Model != null)
+{
+    <div class="row" id="content">
+        <div class="col-lg-6">
+            <div class="well well-lg" style="overflow-y:auto;">
+
+                <h4 id="heading">FRIENDS</h4>
+                <div class="well well-lg" style="overflow-y:auto;">
+
+
+                @*We can easily show a list of friends on load but only if they have installed the app*@
+
+
+                @if (Model.Friends != null && Model.Friends.Data != null && Model.Friends.Data.Count > 0)
+                {
+                    foreach (var myFriend in @Model.Friends.Data)
+                    {
+                        <a href="@myFriend.link" target="_blank">
+                            <div class="photoTile">
+                                <label>@myFriend.name</label>
+                                @if (myFriend.Picture != null && myFriend.Picture.Data != null)
+                                {
+                                    <img src="@myFriend.Picture.Data.url" />
+                                }
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <p>No friends found.</p>
+                }
+                </div>
+            </div>
+        </div>
+
+   
+    
+    
+    
+        <div class="col-lg-6">
+            <div class="well well-lg" style="height:500px ;margin-right:-22px;">
+
+                <h4 id="heading">PHOTOS</h4>
+                <div class="well well-lg" style="height:400px;overflow-y:auto;">
+                    @if (Model.Photos != null && Model.Photos.Data != null && Model.Photos.Data.Count > 0)
+                    {
+                        foreach (var photo in @Model.Photos.Data)
+                        {
+                            <a href="@photo.Link" target="_blank">
+                                <div class="photoTile">
+                                    <img src="@photo.ThumbnailUrl" />
+                                </div>
+                            </a>
+                        }
+                    }
+
+                    else
+                    {
+                        <p>No photo available.</p>
+                    }
+                </div>
+
+            </div>
+         </div>
+    </div>
+   
+}
+
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+
+<input type="hidden" id="accessToken" value="@Session["AccessToken"]" />
+
+
+
+<div id="loading" style="opacity: 0.8;margin: 0px auto;display: none;position: fixed;top: 50%;left: 50%;"><img style="top:50%;left:50%; " src="~/Images/box (1).gif" alt="" /></div>
+
+
+<script type="text/javascript">
+   
+        function callAPI() {
+            debugger;
+             
+            var startDate, endDate;
+            var dates = $("#reportrange span").html().split(" - ");
+            startDate = dates[0];
+            endDate = dates[1];
+
+            $.ajax({
+                url: "/Home/FacebookCallback",
+                type: "POST",
+                data: JSON.stringify({ 'since': startDate, 'until': endDate, 'accessToken': $("#accessToken").val(), 'taskName': "RankFriends" }),
+                dataType: 'html',
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                beforeSend: function () {
+
+                    $('#loading').show();
+
+                },
+                success: function (result) {
+                    debugger;
+                    $("#content").empty();
+                  
+
+                    $("#content").html(result);
+
+
+                },
+                complete: function () {
+                    debugger;
+                    $('#loading').hide(500);
+                }
+
+            });
+
+
+        };
+
+
+
+        //datepicker
+
+        $(function () {
+
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+
+            function cb(start, end) {
+
+
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            $('#reportrange').daterangepicker({
+
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    //'Today': [moment(), moment()],
+                    //'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    //'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 6 Months': [moment().subtract(6, 'month'), moment()],
+                    'Last 9 Months': [moment().subtract(9, 'month'), moment()],
+                    'Last 1 Year': [moment().subtract(12, 'month'), moment()],
+                    'Last 2 Years': [moment().subtract(24, 'month'), moment()],
+                    'Last 3 Years': [moment().subtract(36, 'month'), moment()],
+
+
+                    //'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    //'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, cb);
+
+            cb(start, end);
+
+        });
+
+
+
+   
+
+</script>

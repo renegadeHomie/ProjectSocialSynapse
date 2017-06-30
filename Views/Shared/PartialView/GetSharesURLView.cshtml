@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "GetSharesURLView";
+}
+
+<h2>Social Reach</h2>
+<h3>Input any URL to find its total shares on social media platform such as Facebook/LinkedIn!!</h3>
+ <!-- Include Required Prerequisites -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+@*Get shares count*@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input type="text" class="form-control" id="urlInput" placeholder="Enter URL" />
+                            <p class="help-block">
+                                with <code>http</code> or <code>https</code>
+
+                            </p>
+                        </div>
+                        <button type="button" class="btn btn-success" id="getJSON">Get Share Counts</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" id="data-tab">
+            <div class="list-group">
+                <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">Facebook</h4>
+                    <p class="list-group-item-text" id="facebook-count"></p>
+                </a>
+
+                @*<a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading">Twitter</h4>
+                        <p class="list-group-item-text" id="twitter-count"></p>
+                    </a>*@
+                <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">LinkdIn</h4>
+                    <p class="list-group-item-text" id="linkdin-count"></p>
+                </a>
+                @*<a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">Total shares counts</h4>
+                    <p class="list-group-item-text" id="total-count"></p>
+                </a>*@
+            </div>
+        </div>
+        <!-- Total shares count -->
+        @*<div class="col-md-4" id="total-shares">
+                <div class="list-group">
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading">Total shares counts</h4>
+                        <p class="list-group-item-text" id="total-count"></p>
+                    </a>
+
+                </div>
+            </div>*@
+    </div>
+</div>
+<script>
+    
+    $(".nav a").on("click", function () {
+        debugger;
+        $(".nav").find(".active").removeClass("active");
+        $(this).addClass("active");
+    });
+  
+    //gET SHARES COUNT
+    $('#getJSON').click(function () {
+        debugger;
+        $('#data-tab').fadeOut();
+        $URL = $('#urlInput').val();
+
+        totalShares($URL);
+
+        $('#data-tab').fadeIn();
+
+    });
+
+
+    // Format Number functions
+    function ReplaceNumberWithCommas(yourNumber) {
+        //Seperates the components of the number
+        var components = yourNumber.toString().split(".");
+        //Comma-fies the first part
+        components[0] = components[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        //Combines the two sections
+        return components.join(".");
+    }
+
+
+    // SHARE COUNTS FUNCTIONS 
+
+    // Facebook Shares Count
+    function facebookShares($URL) {
+
+        $.getJSON('https://graph.facebook.com/?id=' + $URL, function (fbdata) {
+            $('#facebook-count').text('The URL has ' + ReplaceNumberWithCommas(fbdata.share.share_count
+    ) + ' shares count on Facebook');
+            $('#total-shares').attr('data-facebookShares', fbdata.share.share_count
+    );
+        });
+
+    }
+
+
+    // Twitter Shares Count
+    function twitterShares($URL) {
+
+        $.getJSON('https://cdn.api.twitter.com/1/urls/count.json?url=' + $URL + '&callback=?', function (twitdata) {
+            $('#twitter-count').text('The URL has ' + ReplaceNumberWithCommas(twitdata.count) + ' shares count on Twitter')
+            $('#total-shares').attr('data-twitterShares', twitdata.count)
+        });
+
+    }
+
+    // LinkIn Shares Count
+    function linkdInShares($URL) {
+
+        $.getJSON('https://www.linkedin.com/countserv/count/share?url=' + $URL + '&callback=?', function (linkdindata) {
+            $('#linkdin-count').text('The URL has ' + ReplaceNumberWithCommas(linkdindata.count) + ' shares count on linkdIn');
+            $('#total-shares').attr('data-linkdInShares', linkdindata.count);
+        });
+
+    }
+
+    function totalShares($URL) {
+
+        linkdInShares($URL)
+        twitterShares($URL)
+        facebookShares($URL)
+        setTimeout(function () {
+
+            var fbShares = parseInt($('#total-shares').attr('data-facebookShares'));
+            var twitShares = parseInt($('#total-shares').attr('data-twitterShares'));
+            var linkdInShares = parseInt($('#total-shares').attr('data-linkdinshares'));
+
+            var totalShares = fbShares + linkdInShares;
+            console.log(totalShares);
+            $('#total-count').text('The URL has ' + ReplaceNumberWithCommas(totalShares) + ' shares count on Facebook & LinkdIn')
+        }, 1000);
+
+
+    }
+</script>
