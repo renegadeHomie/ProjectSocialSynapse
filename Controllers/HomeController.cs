@@ -88,8 +88,8 @@ namespace FacebookLoginMVC.Controllers
             var loginUrl = fb.GetLoginUrl(new
             {
 
-                client_id = "766665516834460",
-                client_secret = "719ca51c840e61985e97077ad3638343",
+                client_id = "YOUR_CLIENT_ID",
+                client_secret = "YOUR_CLIENT_SECRET",
                 redirect_uri = RedirectUri.AbsoluteUri,
                 response_type = "code",
                 scope = permissions
@@ -114,8 +114,8 @@ namespace FacebookLoginMVC.Controllers
 
                 dynamic result = fb.Post("oauth/access_token", new
                 {
-                    client_id = "766665516834460",
-                    client_secret = "719ca51c840e61985e97077ad3638343",
+                    client_id = "YOUR_CLIENT_ID",
+                    client_secret = "YOUR_CLIENT_SECRET",
                     redirect_uri = RedirectUri.AbsoluteUri,
                     code = code
 
